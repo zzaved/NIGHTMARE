@@ -1,3 +1,5 @@
+//criando todas as variáveis que serão utilizadas no nosso jogo
+
 let personagem;
 let chao;
 let teclado;
@@ -12,6 +14,8 @@ class Fase1 extends Phaser.Scene{
     constructor(){
         super({key:"Fase1"})
     }
+
+//carregando todos os assets que serão utilizados no jogo
 
     preload(){
         this.load.image('background-fase-1', 'assets/background-fase-1.png');
@@ -28,6 +32,7 @@ class Fase1 extends Phaser.Scene{
         //essa função cria a figura do personagem para ser aplicada no jogo e a posição inicial dele
         personagem = this.physics.add.sprite(larguraJogo/2, 0, 'player').setScale(3);
         personagem.setCollideWorldBounds(true);
+        //criando a animação da spritesheet
         personagem.anims.create({
             key: 'run',
             frames: this.anims.generateFrameNumbers('personagem', {start: 0, end: 11}),
@@ -45,7 +50,7 @@ class Fase1 extends Phaser.Scene{
 
         //adicionando a primeira plataforma no nosso jogo
         plataforma = this.physics.add.staticImage(100, 660, 'plataforma');
-        //adicionei o collider para que o allien não atravesse a plataforma
+        //adicionei o collider para que o personagem não atravesse a plataforma
         this.physics.add.collider(personagem, plataforma);
 
         //adicione a segunda plataforma
@@ -53,46 +58,45 @@ class Fase1 extends Phaser.Scene{
         //mesma lógica para que o personagem não atravesse a plataforma
         this.physics.add.collider(personagem, plataforma2);
 
-            //adicionando coracao ao nosso jogo
-            coracao = this.physics.add.sprite(larguraJogo/2, 0, 'coracao').setScale(0.5);
-            //essa função configura a colisão da coracao com os limites do jogo, permitindo que ela não saia para fora da tela
-            coracao.setCollideWorldBounds(true);
-            //forma da coracao quicar
-            coracao.setBounce(0.5);
-            //adicionando a colisão abaixo da coracao com os elementos que não podem ser ultrapassados no nosso jogo, no caso as duas plataformas e o chão
-            this.physics.add.collider(coracao, plataforma);
-            this.physics.add.collider(coracao, plataforma2);
-            this.physics.add.collider(coracao, chao);
+        //adicionando coracao ao nosso jogo
+        coracao = this.physics.add.sprite(larguraJogo/2, 0, 'coracao').setScale(0.5);
+        //essa função configura a colisão da coracao com os limites do jogo, permitindo que ela não saia para fora da tela
+        coracao.setCollideWorldBounds(true);
+        //forma da coracao quicar
+        coracao.setBounce(0.5);
+        //adicionando a colisão abaixo da coracao com os elementos que não podem ser ultrapassados no nosso jogo, no caso as duas plataformas e o chão
+        this.physics.add.collider(coracao, plataforma);
+        this.physics.add.collider(coracao, plataforma2);
+        this.physics.add.collider(coracao, chao);
 
-            //adicionando o placar ao jogo e configurando como ele será exibido, desde o tamanho da fonte até a variável da quantidade de pontuação
-            placar = this.add.text(50, 50, 'coracaos:' + pontuacao, {fontSize:'45px', fill:'#ffffff'});
-            vitoria = this.add.text(140,500, 'Você é um vampiro!', {fontSize: '70px', fill: '#ffffff'}).setVisible(false);
+        //adicionando o placar ao jogo e configurando como ele será exibido, desde o tamanho da fonte até a variável da quantidade de pontuação
+        placar = this.add.text(50, 50, 'coracaos:' + pontuacao, {fontSize:'45px', fill:'#ffffff'});
+        //adicionando a tela da vitória que será exibida para o jogador
+        vitoria = this.add.text(140,500, 'Você é um vampiro!', {fontSize: '70px', fill: '#ffffff'}).setVisible(false);
 
-
-            //abaixo a função da mecanica da coleta de coracaos no nosso jogo:
-            this.physics.add.overlap(personagem,coracao, function(){
-                //quando o personagem encosta na coracao ela irá desaparecer
-                coracao.setVisible(false); 
-                //essa função abaixo sorteia um número aleatório entre 50 e 650 (limites da tela) para a coracao spawnar em meio ao jogo
-                var posicaocoracao_Y = Phaser.Math.RND.between(100, 1000);
-                var posicaocoracao_X = Phaser.Math.RND.between(100, 600);
-                //essa função também é responsável pelo ajuste da posição da coracao
-                coracao.setPosition(posicaocoracao_Y, posicaocoracao_X);
-                //responsável por aumentar a pontuação ao personagem encostar na coracao
-                pontuacao +=1;
-                //texto que irá aparecer no placar
-                placar.setText('corações arrancados: ' + pontuacao);
-                //após a coracao ser coletada, ela irá spawnar novamente e ficará visível
-                coracao.setVisible(true);
-            });
-
+        //abaixo a função da mecanica da coleta de coracaos no nosso jogo:
+        this.physics.add.overlap(personagem,coracao, function(){
+            //quando o personagem encosta na coracao ela irá desaparecer
+            coracao.setVisible(false); 
+            //essa função abaixo sorteia um número aleatório entre 50 e 650 (limites da tela) para a coracao spawnar em meio ao jogo
+            var posicaocoracao_Y = Phaser.Math.RND.between(100, 1000);
+            var posicaocoracao_X = Phaser.Math.RND.between(100, 600);
+            //essa função também é responsável pelo ajuste da posição da coracao
+            coracao.setPosition(posicaocoracao_Y, posicaocoracao_X);
+            //responsável por aumentar a pontuação ao personagem encostar na coracao
+            pontuacao +=1;
+            //texto que irá aparecer no placar
+            placar.setText('corações arrancados: ' + pontuacao);
+            //após a coracao ser coletada, ela irá spawnar novamente e ficará visível
+            coracao.setVisible(true);
+        });
 
     }
 
     update(){
         personagem.anims.play('run', true);
 
-        //adicionei o collider para que o allien não atravesse o chão
+        //adicionei o collider para que o personagem não atravesse o chão
         this.physics.add.collider(personagem, chao);
 
         //movimentação para a esquerda do personagem de acordo com o teclado
